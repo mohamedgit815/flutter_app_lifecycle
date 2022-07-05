@@ -31,20 +31,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
   late final Timer _timer;
   int _count = 0;
-  bool _acitve = false;
+  bool _active = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _count++;
-      });
+      if(_active){
+        setState(() {
+          _count++;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
     _timer.cancel();
   }
@@ -53,17 +57,17 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if(state == AppLifecycleState.resumed) {
-      _acitve = true;
-      print("resumed");
+      _active = true;
+      print("resumed $state");
     } else if(state == AppLifecycleState.inactive) {
-      _acitve = false;
-      print("inactive");
+      _active = false;
+      print("inactive $state");
     } else if(state == AppLifecycleState.detached) {
-      _acitve = false;
-      print("detached");
+      _active = false;
+      print("detached $state");
     } else if(state == AppLifecycleState.paused) {
-      _acitve = false;
-      print("paused");
+      _active = false;
+      print("paused $state");
     }
   }
 
